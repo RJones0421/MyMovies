@@ -38,6 +38,8 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
+    private MainActivity mainActivity = new MainActivity();
+
     public void sendMessage(View view) {
 
         EditText inputText = getView().findViewById(R.id.movieSearch);
@@ -45,13 +47,11 @@ public class SearchFragment extends Fragment {
 
         Log.d("inputTest", input);
 
-        requestType(input, BySearch);
+        mainActivity.requestType(input, BySearch);
     }
 
-    RequestActivity requestActivity = new RequestActivity();
-
     //get the url depending on the request type
-    public void requestType(String input, String type) {
+    /*public void requestType(String input, String type) {
         final String KEY = "&apikey=437cc919";
         final String searchURL = "https://www.omdbapi.com/?s=something&apikey=437cc919";
         final String imdbURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
@@ -61,15 +61,15 @@ public class SearchFragment extends Fragment {
         switch (type) {
             case BySearch:
                 url = searchURL;
-                requestActivity.makeRequest(url);
+                mainActivity.makeRequest(url);
                 Log.d("urlType", "search for " + url);
                 break;
             case ByIMDB:
                 url = imdbURL + input + KEY;
-                requestActivity.makeRequest(url);
+                mainActivity.makeRequest(url);
                 Log.d("urlType", "IMDB");
                 break;
         }
-    }
+    }*/
 
 }

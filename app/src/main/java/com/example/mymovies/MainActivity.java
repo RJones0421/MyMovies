@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mymovies.ui.main.SectionsPagerAdapter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     //get the url depending on the request type
     public void requestType(String input, String type) {
         final String KEY = "&apikey=437cc919";
-        final String searchURL = "https://www.omdbapi.com/?s";
+        final String searchURL = "https://www.omdbapi.com/?s=";
         final String imdbURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
         final String pageURL = "&page=";
         String url;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 url = searchURL + input + KEY;
                 makeRequest(url);
                 Log.d("urlType", "search");
+                Log.d("url", url);
                 break;
             case ByIMDB:
                 url = imdbURL + input + KEY;
@@ -87,13 +89,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
+                        String errorMessage = error.getMessage();
                         Log.d("test", "request failed");
+                        Log.d("error", errorMessage);
                     }
                 });
         queue.add(jsonObjectRequest);
     }
 
     protected void DisplayMovieResults(JSONObject response) {
+        try {
+            JSONObject coord = response.getJSONObject("coord");
+        }
 
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
