@@ -28,6 +28,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:onClick="sendMessage"
         android:text="@string/button_send"
         app:layout_constraintBaseline_toBaselineOf="@+id/movieSearch"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +47,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/something"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:text="TextView" />
