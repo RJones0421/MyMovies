@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">MyMovies</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">Search Movies</string>
+    <string name="tab_text_2">Favorites</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_message">Search for movies</string>
+    <string name="button_send">Search</string>
+    <string name="name_and_id">Robert Jones - Z23414330</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="username_edit">Enter your username</string>
+    <string name="password_edit">Enter your password</string>
+    <string name="button_signup">Sign-Up</string>
+    <string name="button_signin">Sign-In</string>
+    <string name="plot_title">Plot:</string>
+    <string name="actor_title">Actor(s):</string>
+    <string name="director_title">Director(s):</string>
 </resources>
