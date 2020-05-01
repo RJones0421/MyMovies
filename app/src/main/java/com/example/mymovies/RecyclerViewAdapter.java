@@ -1,6 +1,7 @@
 package com.example.mymovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Toast.makeText(mContext, mMovieTitles.get(position), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(mContext, DisplayInfoActivity.class);
+                intent.putExtra("movie_title", mMovieTitles.get(position));
+                mContext.startActivity(intent);
+
+                //Toast.makeText(mContext, mMovieTitles.get(position), Toast.LENGTH_SHORT).show();
             }
         });
     }

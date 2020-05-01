@@ -16,27 +16,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <TextView
-                android:id="@+id/movieTitle"
+                android:id="@+id/somethingElse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="TextView"
                 android:textSize="36sp" />
 
-            <WebView
-                android:layout_width="150dp"
+            <ImageView
+                android:id="@+id/posterInfo"
+                android:layout_width="200dp"
                 android:layout_height="300dp"
-                android:layout_gravity="center_horizontal">
-
-            </WebView>
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_launcher_foreground" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:id="@+id/plotTextView"
@@ -47,7 +49,7 @@
 
                 <TextView
                     android:id="@+id/plotDesc"
-                    android:layout_width="200dp"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="TextView" />
@@ -56,7 +58,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:id="@+id/actorTextView"
@@ -67,7 +70,7 @@
 
                 <TextView
                     android:id="@+id/actorDesc"
-                    android:layout_width="200dp"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="TextView" />
@@ -76,7 +79,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:id="@+id/dirTextView"
@@ -87,7 +91,7 @@
 
                 <TextView
                     android:id="@+id/dirDesc"
-                    android:layout_width="200dp"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="TextView" />
