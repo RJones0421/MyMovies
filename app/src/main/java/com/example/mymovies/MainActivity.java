@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         EditText inputText = findViewById(R.id.movieSearch);
         String input = inputText.getText().toString();
 
-        Log.d("inputTest", input);
+        Log.d("inputTest2", input);
 
         requestType(input, BySearch);
     }
