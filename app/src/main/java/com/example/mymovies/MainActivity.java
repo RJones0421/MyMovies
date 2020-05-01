@@ -13,13 +13,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mymovies.ui.main.SectionsPagerAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
     }
 
+
     public void sendMessage(View view) {
 
         EditText inputText = findViewById(R.id.movieSearch);
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public void requestType(String input, String type) {
         final String KEY = "&apikey=437cc919";
         final String searchURL = "https://www.omdbapi.com/?s=";
-        final String imdbURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
+        final String imdbURL = "https://www.omdbapi.com/?i=";
         final String pageURL = "&page=";
         String url;
 
@@ -98,12 +104,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void DisplayMovieResults(JSONObject response) {
+
         try {
-            JSONObject coord = response.getJSONObject("coord");
+
+            ArrayList<String> mPosterUrls = new ArrayList<>();
+            ArrayList<String> mMovieNames = new ArrayList<>();
+
+
+            JSONArray searchArray = response.getJSONArray("Search");
+
+            for (int i = 0; i < searchArray.length(); i++) {
+                JSONObject movie = searchArray.getJSONObject(i);
+                String movieTitle = movie.getString("Title");
+                String moviePoster = movie.getString("Poster");
+
+                mPosterUrls.add(moviePoster);
+                mMovieNames.add(movieTitle);
+            }
+
+            initRecycle(mPosterUrls, mMovieNames);
+
         }
 
         catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initRecycle(ArrayList mPosterUrls, ArrayList mMovieNames) {
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mPosterUrls, mMovieNames);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
