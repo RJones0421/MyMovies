@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 url = searchURL + input + KEY;
                 makeRequest(url);
                 Log.d("urlType", "search");
-                Log.d("url", url);
                 break;
             case ByIMDB:
                 url = imdbURL + input + KEY;
@@ -95,16 +94,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
-                        String errorMessage = error.getMessage();
                         Log.d("test", "request failed");
-                        Log.d("error", errorMessage);
                     }
                 });
         queue.add(jsonObjectRequest);
     }
 
     protected void DisplayMovieResults(JSONObject response) {
-
         try {
 
             ArrayList<String> mPosterUrls = new ArrayList<>();
@@ -125,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             initRecycle(mPosterUrls, mMovieNames);
 
         }
-
         catch (JSONException e) {
             e.printStackTrace();
         }
