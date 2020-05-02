@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,6 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mymovies.ui.main.SectionsPagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,10 +40,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -136,5 +134,12 @@ public class MainActivity extends AppCompatActivity {
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mPosterUrls, mMovieNames);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void logout(View view) {
+        Toast.makeText(this, "Logging Out...", Toast.LENGTH_SHORT).show();
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 }

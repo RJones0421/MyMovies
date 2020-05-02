@@ -19,27 +19,33 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    EditText mEmail, mPassword;
-    Button mLoginBtn;
-    TextView mRegisterSwitch;
+    EditText mName, mEmail, mPassword;
+    Button mRegisterBtn;
+    TextView mLoginSwitch;
     FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
-        mEmail = findViewById(R.id.loginEmail);
-        mPassword = findViewById(R.id.loginPassword);
-        mLoginBtn = findViewById(R.id.loginButton);
-        mRegisterSwitch = findViewById(R.id.loginToRegister);
+        mName = findViewById(R.id.registerName);
+        mEmail = findViewById(R.id.registerEmail);
+        mPassword = findViewById(R.id.registerPassword);
+        mRegisterBtn = findViewById(R.id.registerButton);
+        mLoginSwitch = findViewById(R.id.registerToLogin);
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+        if(fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
+
+        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = mEmail.getText().toString();
@@ -54,28 +60,28 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Registering User...", Toast.LENGTH_SHORT).show();
 
-                fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Logged In Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "User Successfully Created", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = fAuth.getCurrentUser();
                             updateUI(user);
                             //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
-                            Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         });
 
-        mRegisterSwitch.setOnClickListener(new View.OnClickListener() {
+        mLoginSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         });
@@ -91,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if(user != null) {
-            Intent home_intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent home_intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(home_intent);
         }
     }

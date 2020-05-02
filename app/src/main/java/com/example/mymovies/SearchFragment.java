@@ -1,8 +1,9 @@
 package com.example.mymovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -11,17 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import org.json.JSONException;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 
 public class SearchFragment extends Fragment {
 
     //request types
     private final String BySearch = "BySearch";
     private final String ByIMDB = "ByIMDB";
+
+    private Context mContext;
 
     //page number
     private double pageNum;
