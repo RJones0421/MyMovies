@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         if(user != null) {
             Intent home_intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(home_intent);
+            finish();
         }
     }
 }

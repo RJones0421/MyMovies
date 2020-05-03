@@ -99,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(user != null) {
             Intent home_intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(home_intent);
+            finish();
         }
     }
 }

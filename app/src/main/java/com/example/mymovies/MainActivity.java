@@ -2,6 +2,7 @@ package com.example.mymovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +16,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -22,17 +25,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mymovies.ui.main.SectionsPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String BySearch = "BySearch";
     private final String ByIMDB = "ByIMDB";
+
+    private RecyclerView mRecyclerView;
 
     private double pageNum = 1;
     private String pageNumStr;
@@ -141,5 +153,42 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
+    }
+
+    public void getUserID(View view) {
+        String userID = "123abc";
+        Log.d("Main UID","123abc");
+        checkFavorites(userID);
+    }
+
+    public void checkFavorites (String userID) {
+        final ArrayList<String> mPosterUrls = new ArrayList<>();
+        final ArrayList<String> mMovieNames = new ArrayList<>();
+        final List<String> mUserIDs = new ArrayList<>();
+
+        Log.d("CF", "Arrays created");
+
+        mRecyclerView = findViewById(R.id.favoritesRecycler);
+        new FirebaseDatabaseHelper().readFavs(new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Favorites> favorites, List<String> keys) {
+                new FavoritesRecycler_Config().setConfig(mRecyclerView, MainActivity.this, favorites, keys);
+            }
+
+            @Override
+            public void DataIsInserted() {
+
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+
+            @Override
+            public void DataIsDeleted() {
+
+            }
+        });
     }
 }
