@@ -28,10 +28,18 @@
                 android:textSize="36sp" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/addButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="addToFavorites"
                 android:text="Add to Favorites" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="removeFromFavorites"
+                android:text="Delete from Favorites" />
 
             <ImageView
                 android:id="@+id/posterInfo"

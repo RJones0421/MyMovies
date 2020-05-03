@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,14 +17,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DisplayInfoActivity extends AppCompatActivity {
+
+    private String movieTitle;
+    private String posterUrl;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,7 @@ public class DisplayInfoActivity extends AppCompatActivity {
     private void getIncomingIntent() {
         if (getIntent().hasExtra("movie_title")) {
             String movieTitle = getIntent().getStringExtra("movie_title");
+            key = getIntent().getStringExtra("key");
 
             requestType(movieTitle);
         }
@@ -83,8 +93,8 @@ public class DisplayInfoActivity extends AppCompatActivity {
             TextView actorsDesc = findViewById(R.id.actorDesc);
             TextView dirDesc = findViewById(R.id.dirDesc);
 
-            String movieTitle = response.getString("Title");
-            String posterUrl = response.getString("Poster");
+            movieTitle = response.getString("Title");
+            posterUrl = response.getString("Poster");
             String plot = response.getString("Plot");
             String actors = response.getString("Actors");
             String director = response.getString("Director");
@@ -101,6 +111,73 @@ public class DisplayInfoActivity extends AppCompatActivity {
         }
         catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void addToFavorites(View view) {
+
+        String uid = getCurrentUser();
+
+        Favorites favorite = new Favorites();
+        favorite.setUserID(uid);
+        favorite.setMovieTitle(movieTitle);
+        favorite.setPosterURL(posterUrl);
+
+        new FirebaseDatabaseHelper().addFavorite(favorite, new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Favorites> favorites, List<String> keys) {
+
+            }
+
+            @Override
+            public void DataIsInserted() {
+                Toast.makeText(DisplayInfoActivity.this, "This movie has been added to favorites", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+
+            @Override
+            public void DataIsDeleted() {
+
+            }
+        });
+    }
+
+    public void removeFromFavorites(View view) {
+
+        key = getIntent().getStringExtra("key");
+
+        new FirebaseDatabaseHelper().deleteFavorite(key, new FirebaseDatabaseHelper.DataStatus() {
+            @Override
+            public void DataIsLoaded(List<Favorites> favorites, List<String> keys) {
+
+            }
+
+            @Override
+            public void DataIsInserted() {
+            }
+
+            @Override
+            public void DataIsUpdated() {
+
+            }
+
+            @Override
+            public void DataIsDeleted() {
+                Toast.makeText(DisplayInfoActivity.this, "This movie has been removed from favorites", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public String getCurrentUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        } else {
+            return null;
         }
     }
 }

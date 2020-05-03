@@ -3,6 +3,8 @@ package com.example.mymovies;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,8 +20,6 @@ public class FirebaseDatabaseHelper {
     private DatabaseReference mRefFav;
     private List<Favorites> favorites = new ArrayList<>();
 
-    private String mUserID;
-
     public interface DataStatus {
         void DataIsLoaded(List<Favorites> favorites, List<String> keys);
         void DataIsInserted();
@@ -33,7 +33,8 @@ public class FirebaseDatabaseHelper {
     }
 
     public void readFavs(final DataStatus dataStatus) {
-        mRefFav.orderByChild("userID").equalTo("123abc").addValueEventListener(new ValueEventListener() {
+        String uid = getCurrentUser();
+        mRefFav.orderByChild("userID").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 favorites.clear();
@@ -64,5 +65,32 @@ public class FirebaseDatabaseHelper {
                 dataStatus.DataIsInserted();
             }
         });
+    }
+
+    public void updateFavorite(String key, Favorites favorite, final DataStatus dataStatus) {
+        mRefFav.child(key).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                dataStatus.DataIsUpdated();
+            }
+        });
+    }
+
+    public void deleteFavorite(String key, final DataStatus dataStatus) {
+        mRefFav.child(key).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                dataStatus.DataIsDeleted();
+            }
+        });
+    }
+
+    public String getCurrentUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        } else {
+            return null;
+        }
     }
 }

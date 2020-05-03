@@ -37,6 +37,7 @@ public class FavoritesRecycler_Config {
         private String mUserID;
 
         private String key;
+        private String movieTitle;
 
         public FavoriteItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).
@@ -44,21 +45,31 @@ public class FavoritesRecycler_Config {
 
             mTitle = itemView.findViewById(R.id.movieTitle);
             mPoster = itemView.findViewById(R.id.moviePoster);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, DisplayInfoActivity.class);
+                    intent.putExtra("movie_title", movieTitle);
+                    intent.putExtra("key", key);
+
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
         public void bind(Favorites favorite, String key) {
             mUserID = favorite.getUserID();
 
-            if(mUserID.equals("123abc")) {
-                mTitle.setText(favorite.getMovieTitle());
+            movieTitle = favorite.getMovieTitle();
+            mTitle.setText(movieTitle);
 
-                Glide.with(mContext)
-                        .asBitmap()
-                        .load(favorite.getPosterURL())
-                        .into(mPoster);
+            Glide.with(mContext)
+                    .asBitmap()
+                    .load(favorite.getPosterURL())
+                    .into(mPoster);
 
-                this.key = key;
-            }
+            this.key = key;
         }
     }
 
