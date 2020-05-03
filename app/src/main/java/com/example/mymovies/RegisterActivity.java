@@ -3,7 +3,6 @@ package com.example.mymovies;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    //declaring class variables
     EditText mName, mEmail, mPassword;
     Button mRegisterBtn;
     TextView mLoginSwitch;
@@ -31,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        //assigning variables to the UI
         mName = findViewById(R.id.registerName);
         mEmail = findViewById(R.id.registerEmail);
         mPassword = findViewById(R.id.registerPassword);
@@ -45,12 +46,15 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
 
+        //attempt to register the user
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get the data from the text boxes
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 
+                //make sure the fields aren't empty
                 if(TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required.");
                     return;
@@ -62,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Toast.makeText(RegisterActivity.this, "Registering User...", Toast.LENGTH_SHORT).show();
 
+                //attempt to create user
                 fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -69,7 +74,6 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "User Successfully Created", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = fAuth.getCurrentUser();
                             updateUI(user);
-                            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -78,6 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //switch to login page
         mLoginSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
+    //send user to main activity
     public void updateUI(FirebaseUser user) {
         if(user != null) {
             Intent home_intent = new Intent(RegisterActivity.this, MainActivity.class);

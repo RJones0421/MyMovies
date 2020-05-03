@@ -16,10 +16,12 @@ import java.util.List;
 
 public class FirebaseDatabaseHelper {
 
+    //declaring class variables
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRefFav;
     private List<Favorites> favorites = new ArrayList<>();
 
+    //interface for data updates
     public interface DataStatus {
         void DataIsLoaded(List<Favorites> favorites, List<String> keys);
         void DataIsInserted();
@@ -27,13 +29,16 @@ public class FirebaseDatabaseHelper {
         void DataIsDeleted();
     }
 
+    //setup database
     public FirebaseDatabaseHelper() {
         mDatabase = FirebaseDatabase.getInstance();
         mRefFav = mDatabase.getReference("favorites");
     }
 
+    //read the favorites from the database
     public void readFavs(final DataStatus dataStatus) {
         String uid = getCurrentUser();
+        //only go through the movies saved by a specific userid
         mRefFav.orderByChild("userID").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -57,6 +62,7 @@ public class FirebaseDatabaseHelper {
         });
     }
 
+    //add a new movie to favorites
     public void addFavorite(Favorites favorite, final DataStatus dataStatus) {
         String key = mRefFav.push().getKey();
         mRefFav.child(key).setValue(favorite).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -67,6 +73,7 @@ public class FirebaseDatabaseHelper {
         });
     }
 
+    //update an existing movie
     public void updateFavorite(String key, Favorites favorite, final DataStatus dataStatus) {
         mRefFav.child(key).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -76,6 +83,7 @@ public class FirebaseDatabaseHelper {
         });
     }
 
+    //delete a movie
     public void deleteFavorite(String key, final DataStatus dataStatus) {
         mRefFav.child(key).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -85,6 +93,7 @@ public class FirebaseDatabaseHelper {
         });
     }
 
+    //get the current user to reference with database
     public String getCurrentUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {

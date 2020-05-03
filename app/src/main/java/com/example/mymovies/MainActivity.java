@@ -2,7 +2,6 @@ package com.example.mymovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -16,8 +15,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -25,12 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mymovies.ui.main.SectionsPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,13 +32,20 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //declaring class variables
+    //type of link
     private final String BySearch = "BySearch";
-    private final String ByIMDB = "ByIMDB";
+    private final String ByPage = "ByPage";
 
+    //recycler view
     private RecyclerView mRecyclerView;
 
-    private double pageNum = 1;
+    //pagination
+    private int pageNum;
+    private String totalResults;
     private String pageNumStr;
+    final String pageURL = "&page=";
+    private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,33 +58,34 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
     }
 
-
+    //receive search entry
     public void sendMessage(View view) {
 
         EditText inputText = findViewById(R.id.movieSearch);
-        String input = inputText.getText().toString();
+        input = inputText.getText().toString();
 
-        Log.d("inputTest2", input);
+        pageNum = 1;
 
-        requestType(input, BySearch);
+        //send string to make url
+        requestType(BySearch);
     }
 
     //get the url depending on the request type
-    public void requestType(String input, String type) {
+    public void requestType(String type) {
         final String KEY = "&apikey=437cc919";
         final String searchURL = "https://www.omdbapi.com/?s=";
-        final String imdbURL = "https://www.omdbapi.com/?i=";
-        final String pageURL = "&page=";
         String url;
 
         switch (type) {
+            //runs if searching
             case BySearch:
-                url = searchURL + input + KEY;
+                url = searchURL + input + KEY + pageURL + pageNum;
                 makeRequest(url);
                 Log.d("urlType", "search");
                 break;
-            case ByIMDB:
-                url = imdbURL + input + KEY;
+            //runs if displaying data
+            case ByPage:
+                url = searchURL + input + KEY;
                 makeRequest(url);
                 Log.d("urlType", "IMDB");
                 break;
@@ -118,12 +117,15 @@ public class MainActivity extends AppCompatActivity {
     protected void DisplayMovieResults(JSONObject response) {
         try {
 
+            //create new lists for the search
             ArrayList<String> mPosterUrls = new ArrayList<>();
             ArrayList<String> mMovieNames = new ArrayList<>();
 
-
+            //parses the data
             JSONArray searchArray = response.getJSONArray("Search");
+            totalResults = response.getString("totalResults");
 
+            //runs for each search entry
             for (int i = 0; i < searchArray.length(); i++) {
                 JSONObject movie = searchArray.getJSONObject(i);
                 String movieTitle = movie.getString("Title");
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 mMovieNames.add(movieTitle);
             }
 
+            //sends to recycler view
             initRecycle(mPosterUrls, mMovieNames);
 
         }
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //runs recycler view
     private void initRecycle(ArrayList mPosterUrls, ArrayList mMovieNames) {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mPosterUrls, mMovieNames);
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    //allows user to log out
     public void logout(View view) {
         Toast.makeText(this, "Logging Out...", Toast.LENGTH_SHORT).show();
         FirebaseAuth.getInstance().signOut();
@@ -155,19 +160,10 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void getUserID(View view) {
-        String userID = "123abc";
-        Log.d("Main UID","123abc");
-        checkFavorites(userID);
-    }
+    //checks the favorite movies for the person
+    public void checkFavorites (View view) {
 
-    public void checkFavorites (String userID) {
-        final ArrayList<String> mPosterUrls = new ArrayList<>();
-        final ArrayList<String> mMovieNames = new ArrayList<>();
-        final List<String> mUserIDs = new ArrayList<>();
-
-        Log.d("CF", "Arrays created");
-
+        //reads the favorites from database and assigns to recycler view
         mRecyclerView = findViewById(R.id.favoritesRecycler);
         new FirebaseDatabaseHelper().readFavs(new FirebaseDatabaseHelper.DataStatus() {
             @Override
@@ -190,5 +186,26 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void nextPage(View view) {
+        int results = Integer.parseInt(totalResults);
+        int totalPages = results/10;
+
+        if (pageNum <= totalPages) {
+            pageNum++;
+            requestType(BySearch);
+        } else {
+            Toast.makeText(this, "No new pages", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void prevPage(View view) {
+        if (pageNum == 1) {
+            Toast.makeText(this, "No previous pages", Toast.LENGTH_SHORT).show();
+        } else {
+            pageNum--;
+            requestType(BySearch);
+        }
     }
 }

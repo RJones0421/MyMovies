@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,16 +20,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<String> mMoviePosters = new ArrayList<>();
-    private ArrayList<String> mMovieTitles = new ArrayList<>();
+    //declaring class variables
+    private ArrayList<String> mMoviePosters;
+    private ArrayList<String> mMovieTitles;
     private Context mContext;
 
+    //assigning the data to variables in the class
     public RecyclerViewAdapter(Context context, ArrayList<String> moviePoster, ArrayList<String> movieTitle) {
         mMoviePosters = moviePoster;
         mMovieTitles = movieTitle;
         mContext = context;
     }
 
+    //adds a new section for the next movie
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,32 +41,36 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return holder;
     }
 
+    //assigns the data to the view
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        //poster
         Glide.with(mContext)
                 .asBitmap()
                 .load(mMoviePosters.get(position))
                 .into(holder.moviePoster);
 
+        //title
         holder.movieTitle.setText(mMovieTitles.get(position));
 
+        //displays info when clicked
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
                 Intent intent = new Intent(mContext, DisplayInfoActivity.class);
                 intent.putExtra("movie_title", mMovieTitles.get(position));
                 mContext.startActivity(intent);
-
-                //Toast.makeText(mContext, mMovieTitles.get(position), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    //returns the number of movies in this page
     @Override
     public int getItemCount() {
         return mMovieTitles.size();
     }
 
+    //creates and assigns the variables to the individual view
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView moviePoster;

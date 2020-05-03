@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,15 +19,14 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DisplayInfoActivity extends AppCompatActivity {
 
+    //declare class variables
     private String movieTitle;
     private String posterUrl;
     private String key;
@@ -38,9 +36,11 @@ public class DisplayInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_info);
 
+        //get the incoming intent and use it for the parse
         getIncomingIntent();
     }
 
+    //receive the data from the onClick
     private void getIncomingIntent() {
         if (getIntent().hasExtra("movie_title")) {
             String movieTitle = getIntent().getStringExtra("movie_title");
@@ -50,6 +50,7 @@ public class DisplayInfoActivity extends AppCompatActivity {
         }
     }
 
+    //make the url for the api call
     public void requestType(String input) {
         final String KEY = "&apikey=437cc919";
         final String titleURL = "https://www.omdbapi.com/?t=";
@@ -58,8 +59,6 @@ public class DisplayInfoActivity extends AppCompatActivity {
 
         url = titleURL + input + KEY + plotURL;
         makeRequest(url);
-        Log.d("urlType", "IMDB");
-
     }
 
     //call the API using the url
@@ -71,19 +70,18 @@ public class DisplayInfoActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         DisplayMovieResults(response);
-                        Log.d("test", "request passed");
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
-                        Log.d("test", "request failed");
                     }
                 });
         queue.add(jsonObjectRequest);
     }
 
+    //get the data from the call and display it in the UI
     protected void DisplayMovieResults(JSONObject response) {
         try {
 
@@ -114,6 +112,7 @@ public class DisplayInfoActivity extends AppCompatActivity {
         }
     }
 
+    //add a new movie to favorites when button clicked
     public void addToFavorites(View view) {
 
         String uid = getCurrentUser();
@@ -146,6 +145,7 @@ public class DisplayInfoActivity extends AppCompatActivity {
         });
     }
 
+    //delete the movie from favorites when clicked
     public void removeFromFavorites(View view) {
 
         key = getIntent().getStringExtra("key");
@@ -172,6 +172,7 @@ public class DisplayInfoActivity extends AppCompatActivity {
         });
     }
 
+    //find the current user to verify to add a fav to that user
     public String getCurrentUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {

@@ -3,7 +3,6 @@ package com.example.mymovies;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
+
+    //declaring class variables
     EditText mEmail, mPassword;
     Button mLoginBtn;
     TextView mRegisterSwitch;
@@ -31,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //assigning variables to the UI
         mEmail = findViewById(R.id.loginEmail);
         mPassword = findViewById(R.id.loginPassword);
         mLoginBtn = findViewById(R.id.loginButton);
@@ -39,12 +41,14 @@ public class LoginActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        //attempt to login
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 
+                //make sure fields are filled out
                 if(TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required.");
                     return;
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Toast.makeText(LoginActivity.this, "Logging in...", Toast.LENGTH_SHORT).show();
 
+                //signing in if fields are filled
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -63,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Logged In Successfully", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = fAuth.getCurrentUser();
                             updateUI(user);
-                            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -72,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //switch to registration page
         mRegisterSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
+    //send to main activity
     public void updateUI(FirebaseUser user) {
         if(user != null) {
             Intent home_intent = new Intent(LoginActivity.this, MainActivity.class);
